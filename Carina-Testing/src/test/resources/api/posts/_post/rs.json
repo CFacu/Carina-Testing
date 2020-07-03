@@ -1,6 +1,6 @@
 {
   <#if userId??>"userId": "${userId}",</#if>
-  <#if id??>>"id": 101,</#if>
+  "id": 101,
   <#if title??>"title": "${title}",</#if>
   <#if body??>"body": "${body}"</#if>
 }
