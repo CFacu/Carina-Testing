@@ -5,6 +5,7 @@ import com.qaprosoft.carina.core.foundation.AbstractTest;
 import com.qaprosoft.carina.core.foundation.api.http.HttpResponseStatusType;
 import com.qaprosoft.carina.core.foundation.utils.ownership.MethodOwner;
 import io.restassured.path.json.JsonPath;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class CommentAPITest extends AbstractTest {
@@ -21,8 +22,11 @@ public class CommentAPITest extends AbstractTest {
 
         DeleteCommentMethod deleteCommentMethod = new DeleteCommentMethod(id);
         deleteCommentMethod.expectResponseStatus(HttpResponseStatusType.OK_200);
-        deleteCommentMethod.callAPI();
+        String deleteRs = deleteCommentMethod.callAPI().asString();
+        String deletedId = JsonPath.from(deleteRs).getString("id");
+
         deleteCommentMethod.validateResponse();
+        Assert.assertNull(deletedId);
     }
 
     @Test
@@ -37,17 +41,15 @@ public class CommentAPITest extends AbstractTest {
 
         PutCommentMethod putCommentMethod = new PutCommentMethod(id);
         putCommentMethod.expectResponseStatus(HttpResponseStatusType.OK_200);
-        putCommentMethod.callAPI();
-        putCommentMethod.validateResponse();
-    }
+        String putRs = putCommentMethod.callAPI().asString();
+        String newId = JsonPath.from(putRs).getString("id");
 
-    @Test
-    @MethodOwner(owner = "Facundo")
-    public void getAllCommentsTest(){
-        GetCommentsMethod getCommentsMethod = new GetCommentsMethod();
-        getCommentsMethod.expectResponseStatus(HttpResponseStatusType.OK_200);
-        getCommentsMethod.callAPI();
-        getCommentsMethod.validateResponseAgainstJSONSchema("api\\comments\\_get\\comments_schema.json");
+        String oldName = JsonPath.from(getRs).getString("name");
+        String newName = JsonPath.from(putRs).getString("name");
+
+        putCommentMethod.validateResponse();
+        Assert.assertEquals(id, newId);
+        Assert.assertNotEquals(oldName, newName);
     }
 
     @Test
@@ -62,7 +64,9 @@ public class CommentAPITest extends AbstractTest {
 
         DeleteCommentMethod deleteCommentMethod = new DeleteCommentMethod(id);
         deleteCommentMethod.expectResponseStatus(HttpResponseStatusType.OK_200);
-        deleteCommentMethod.callAPI();
+        String deleteRs = deleteCommentMethod.callAPI().asString();
+
         deleteCommentMethod.validateResponse();
+        Assert.assertEquals(deleteRs, "{}");
     }
 }
