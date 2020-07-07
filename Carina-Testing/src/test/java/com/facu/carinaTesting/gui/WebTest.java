@@ -2,14 +2,14 @@ package com.facu.carinaTesting.gui;
 
 import com.facu.carinaTesting.gui.pages.*;
 import com.qaprosoft.carina.core.foundation.AbstractTest;
-import com.qaprosoft.carina.core.foundation.webdriver.decorator.ExtendedWebElement;
-import org.openqa.selenium.By;
+import com.qaprosoft.carina.core.foundation.utils.ownership.MethodOwner;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class WebTest extends AbstractTest {
 
-    @Test
+    @Test(description = "Tests the searchbar")
+    @MethodOwner(owner = "Facundo")
     public void makeSearchTest(){
         HomePage homePage = new HomePage(getDriver());
         homePage.open();
@@ -21,7 +21,8 @@ public class WebTest extends AbstractTest {
         Assert.assertTrue(searchPage.compareWords(search));
     }
 
-    @Test
+    @Test(description = "Test login with valid credentials")
+    @MethodOwner(owner = "Facundo")
     public void loginTest(){
         HomePage homePage = new HomePage(getDriver());
         homePage.open();
@@ -36,8 +37,22 @@ public class WebTest extends AbstractTest {
         Assert.assertTrue(accountPage.verifyLogin("Facundo Costa"));
     }
 
-    @Test
-    public void loginThenLogoutTest(){
+    @Test(description = "Test login with invalid credentials")
+    @MethodOwner(owner = "Facundo")
+    public void loginNegativeTest(){
+        HomePage homePage = new HomePage(getDriver());
+        homePage.open();
+        Assert.assertTrue(homePage.isPageOpened(), "Home page is not opened.");
+
+        LoginPage loginPage = homePage.loginBtn();
+        Assert.assertTrue(loginPage.isPageOpened(), "Login page is not opened.");
+
+        AccountPage accountPage = loginPage.login("c.facu98@gmail.com", "qwerty");
+    }
+
+    @Test(description = "Test logout after login")
+    @MethodOwner(owner = "Facundo")
+    public void logoutTest(){
         HomePage homePage = new HomePage(getDriver());
         homePage.open();
         Assert.assertTrue(homePage.isPageOpened(), "Home page is not opened.");
@@ -54,7 +69,8 @@ public class WebTest extends AbstractTest {
         Assert.assertTrue(loginPage.isPageOpened(), "Couldn't logout.");
     }
 
-    @Test
+    @Test(description = "Test searching for a product and adding it to the cart")
+    @MethodOwner(owner = "Facundo")
     public void addToCartTest(){
         HomePage homePage = new HomePage(getDriver());
         homePage.open();
@@ -65,7 +81,6 @@ public class WebTest extends AbstractTest {
         Assert.assertTrue(searchPage.isPageOpened(), "Search page is not opened.");
         Assert.assertTrue(searchPage.compareWords(search));
 
-        ExtendedWebElement item = searchPage.getFirstItem();
         ItemPage itemPage = searchPage.goToItemPage();
         Assert.assertTrue(itemPage.isPageOpened(), "Item page is not opened.");
 

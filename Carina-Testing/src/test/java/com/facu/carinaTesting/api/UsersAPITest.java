@@ -5,6 +5,7 @@ import com.qaprosoft.carina.core.foundation.AbstractTest;
 import com.qaprosoft.carina.core.foundation.api.http.HttpResponseStatusType;
 import com.qaprosoft.carina.core.foundation.utils.ownership.MethodOwner;
 import io.restassured.path.json.JsonPath;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class UsersAPITest extends AbstractTest {
@@ -17,28 +18,38 @@ public class UsersAPITest extends AbstractTest {
         String postRs = postUserMethod.callAPI().asString();
         postUserMethod.validateResponse();
 
-        String id = JsonPath.from(postRs).getString("id");
+        String postId = JsonPath.from(postRs).getString("id");
 
-        DeleteUserMethod deleteUserMethod = new DeleteUserMethod(id);
+        DeleteUserMethod deleteUserMethod = new DeleteUserMethod(postId);
         deleteUserMethod.expectResponseStatus(HttpResponseStatusType.OK_200);
-        deleteUserMethod.callAPI();
+        String deleteRs = deleteUserMethod.callAPI().asString();
+        String deleteId = JsonPath.from(deleteRs).getString("id");
+
         deleteUserMethod.validateResponse();
+        Assert.assertNotEquals(postId, deleteId);
+        Assert.assertNull(deleteId);
     }
 
     @Test
     @MethodOwner(owner = "Facundo")
     public void getAndUpdateUserTest(){
-        GetUserMethod getUserMethod = new GetUserMethod("4");
+        String id = "4";
+        GetUserMethod getUserMethod = new GetUserMethod(id);
         getUserMethod.expectResponseStatus(HttpResponseStatusType.OK_200);
         String getRs = getUserMethod.callAPI().asString();
         getUserMethod.validateResponse();
 
-        String id = JsonPath.from(getRs).getString("id");
-
         PutUserMethod putUserMethod = new PutUserMethod(id);
         putUserMethod.expectResponseStatus(HttpResponseStatusType.OK_200);
-        putUserMethod.callAPI();
+        String putRs = putUserMethod.callAPI().asString();
+        String newId = JsonPath.from(putRs).getString("id");
+
+        String oldName = JsonPath.from(getRs).getString("name");
+        String newName = JsonPath.from(putRs).getString("name");
+
         putUserMethod.validateResponse();
+        Assert.assertEquals(id, newId);
+        Assert.assertNotEquals(oldName, newName);
     }
 
     @Test
@@ -53,8 +64,11 @@ public class UsersAPITest extends AbstractTest {
 
         DeleteUserMethod deleteUserMethod = new DeleteUserMethod(id);
         deleteUserMethod.expectResponseStatus(HttpResponseStatusType.OK_200);
-        deleteUserMethod.callAPI();
+        String deleteRs = deleteUserMethod.callAPI().asString();
+        String deletedId = JsonPath.from(deleteRs).getString("id");
+
         deleteUserMethod.validateResponse();
+        Assert.assertNull(deletedId);
     }
 
     @Test
@@ -62,16 +76,9 @@ public class UsersAPITest extends AbstractTest {
     public void getUserNegativeTest(){
         GetUserMethod getUserMethod = new GetUserMethod("1899823");
         getUserMethod.expectResponseStatus(HttpResponseStatusType.NOT_FOUND_404);
-        getUserMethod.callAPI();
-    }
+        String getRs = getUserMethod.callAPI().asString();
 
-    @Test
-    @MethodOwner(owner = "Facundo")
-    public void getAllUsersTest(){
-        GetUsersMethod getUsersMethod = new GetUsersMethod();
-        getUsersMethod.expectResponseStatus(HttpResponseStatusType.OK_200);
-        getUsersMethod.callAPI();
-        getUsersMethod.validateResponseAgainstJSONSchema("api\\users\\_get\\users_schema.json");
+        Assert.assertEquals(getRs, "{}");
     }
 
 }
