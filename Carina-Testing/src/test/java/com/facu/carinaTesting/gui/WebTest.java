@@ -47,7 +47,9 @@ public class WebTest extends AbstractTest {
         LoginPage loginPage = homePage.loginBtn();
         Assert.assertTrue(loginPage.isPageOpened(), "Login page is not opened.");
 
-        AccountPage accountPage = loginPage.login("c.facu98@gmail.com", "qwerty");
+        loginPage.login("c.facu98@gmail.com", "qweqwe");
+        loginPage.isInvalidPass();
+
     }
 
     @Test(description = "Test logout after login")

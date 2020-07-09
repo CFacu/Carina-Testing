@@ -4,6 +4,7 @@ import com.qaprosoft.carina.core.foundation.webdriver.decorator.ExtendedWebEleme
 import com.qaprosoft.carina.core.gui.AbstractPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
+import org.testng.Assert;
 
 public class LoginPage extends AbstractPage {
 
@@ -16,6 +17,9 @@ public class LoginPage extends AbstractPage {
     @FindBy(id = "SubmitLogin")
     private ExtendedWebElement signInBtn;
 
+    @FindBy(xpath = "//*[@id=\"center_column\"]/div[1]/ol/li")
+    private ExtendedWebElement invalidPassTxt;
+
     public LoginPage(WebDriver driver) {
         super(driver);
     }
@@ -26,5 +30,9 @@ public class LoginPage extends AbstractPage {
         signInBtn.click();
         return new AccountPage(driver);
 
+    }
+
+    public void isInvalidPass() {
+        Assert.assertNotNull(invalidPassTxt);
     }
 }
