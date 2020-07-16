@@ -1,15 +1,17 @@
 package com.facu.carinaTesting.api.posts;
 
+import java.io.File;
+
 public interface IPostPaths {
-    String postPostRS = "api\\posts\\_post\\rs.json";
-    String postPostRQ = "api\\posts\\_post\\rq.json";
+    String postPostRS = String.format("api%sposts%s_post%srs.json", File.separator, File.separator, File.separator);
+    String postPostRQ = String.format("api%sposts%s_post%srq.json", File.separator, File.separator, File.separator);
 
-    String postGetRS = "api\\posts\\_get\\rs.json";
+    String postGetRS = String.format("api%sposts%s_get%srs.json", File.separator, File.separator, File.separator);
 
-    String postDeleteRS = "api\\posts\\_delete\\rs.json";
+    String postDeleteRS = String.format("api%sposts%s_delete%srs.json", File.separator, File.separator, File.separator);
 
-    String postPutRS = "api\\posts\\_put\\rs.json";
-    String postPutRQ = "api\\posts\\_put\\rq.json";
+    String postPutRS = String.format("api%sposts%s_put%srs.json", File.separator, File.separator, File.separator);
+    String postPutRQ = String.format("api%sposts%s_put%srq.json", File.separator, File.separator, File.separator);
 
-    String postProperties = "api\\posts\\posts.properties";
+    String postProperties = String.format("api%sposts%sposts.properties", File.separator, File.separator);
 }

@@ -1,15 +1,17 @@
 package com.facu.carinaTesting.api.users;
 
+import java.io.File;
+
 public interface IUserPaths {
-    String userPostRS = "api\\users\\_post\\rs.json";
-    String userPostRQ = "api\\users\\_post\\rq.json";
+    String userPostRS = String.format("api%susers%s_post%srs.json", File.separator, File.separator, File.separator);
+    String userPostRQ = String.format("api%susers%s_post%srq.json", File.separator, File.separator, File.separator);
 
-    String userGetRS = "api\\users\\_get\\rs.json";
+    String userGetRS = String.format("api%susers%s_get%srs.json", File.separator, File.separator, File.separator);
 
-    String userDeleteRS = "api\\users\\_delete\\rs.json";
+    String userDeleteRS = String.format("api%susers%s_delete%srs.json", File.separator, File.separator, File.separator);
 
-    String userPutRS = "api\\users\\_put\\rs.json";
-    String userPutRQ = "api\\users\\_put\\rq.json";
+    String userPutRS = String.format("api%susers%s_put%srs.json", File.separator, File.separator, File.separator);
+    String userPutRQ = String.format("api%susers%s_put%srq.json", File.separator, File.separator, File.separator);
 
-    String userProperties = "api\\users\\users.properties";
+    String userProperties = String.format("api%susers%susers.properties", File.separator, File.separator);
 }

@@ -1,12 +1,14 @@
 package com.facu.carinaTesting.gui;
 
+import com.facu.carinaTesting.gui.exceptions.NoItemsException;
 import com.facu.carinaTesting.gui.pages.*;
+import com.facu.carinaTesting.gui.services.ILogin;
 import com.qaprosoft.carina.core.foundation.AbstractTest;
 import com.qaprosoft.carina.core.foundation.utils.ownership.MethodOwner;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class WebTest extends AbstractTest {
+public class WebTest extends AbstractTest implements ILogin {
 
     @Test(description = "Tests the searchbar")
     @MethodOwner(owner = "Facundo")
@@ -24,16 +26,12 @@ public class WebTest extends AbstractTest {
     @Test(description = "Test login with valid credentials")
     @MethodOwner(owner = "Facundo")
     public void loginTest(){
-        HomePage homePage = new HomePage(getDriver());
-        homePage.open();
-        Assert.assertTrue(homePage.isPageOpened(), "Home page is not opened.");
+        String email = "c.facu98@gmail.com";
+        String pass = "qwerty";
 
-        LoginPage loginPage = homePage.loginBtn();
-        Assert.assertTrue(loginPage.isPageOpened(), "Login page is not opened.");
+        AccountPage accountPage = login(getDriver(), email, pass);
 
-        AccountPage accountPage = loginPage.login("c.facu98@gmail.com", "qwerty");
         Assert.assertTrue(accountPage.isPageOpened(), "Account page is not opened.");
-
         Assert.assertTrue(accountPage.verifyLogin("Facundo Costa"));
     }
 
@@ -73,7 +71,7 @@ public class WebTest extends AbstractTest {
 
     @Test(description = "Test searching for a product and adding it to the cart")
     @MethodOwner(owner = "Facundo")
-    public void addToCartTest(){
+    public void addToCartTest() throws NoItemsException {
         HomePage homePage = new HomePage(getDriver());
         homePage.open();
         Assert.assertTrue(homePage.isPageOpened(), "Home page is not opened.");
@@ -89,6 +87,7 @@ public class WebTest extends AbstractTest {
         itemPage.addToCart();
         CartPage cartPage = itemPage.goToCartPage();
         Assert.assertTrue(cartPage.isPageOpened(), "Cart page is not opened.");
-        cartPage.verifyCart();
+
+        cartPage.verifyCart().assertElementPresent();
     }
 }
