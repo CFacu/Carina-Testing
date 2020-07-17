@@ -1,21 +1,26 @@
 package com.facu.carinaTesting.gui;
 
 import com.facu.carinaTesting.gui.pages.*;
+import com.facu.carinaTesting.gui.services.ILogin;
 import com.qaprosoft.carina.core.foundation.AbstractTest;
+import com.qaprosoft.carina.core.foundation.dataprovider.annotations.XlsDataSourceParameters;
 import com.qaprosoft.carina.core.foundation.utils.ownership.MethodOwner;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-public class WebTest extends AbstractTest {
+import java.util.Optional;
 
-    @Test(description = "Tests the searchbar")
+public class WebTest extends AbstractTest implements ILogin {
+
+    @Test(dataProvider = "SingleDataProvider", description = "Tests the searchbar")
     @MethodOwner(owner = "Facundo")
-    public void makeSearchTest(){
+    @XlsDataSourceParameters(path = "xls/autpractice.xlsx", sheet = "searches", dsUid = "TUID", dsArgs = "search")
+    public void makeSearchTest(String search){
         HomePage homePage = new HomePage(getDriver());
         homePage.open();
         Assert.assertTrue(homePage.isPageOpened(), "Home page is not opened.");
 
-        String search = "black";
         SearchPage searchPage = homePage.makeSearch(search);
         Assert.assertTrue(searchPage.isPageOpened(), "Search page is not opened.");
         Assert.assertTrue(searchPage.compareWords(search));
@@ -23,63 +28,52 @@ public class WebTest extends AbstractTest {
 
     @Test(description = "Test login with valid credentials")
     @MethodOwner(owner = "Facundo")
-    public void loginTest(){
-        HomePage homePage = new HomePage(getDriver());
-        homePage.open();
-        Assert.assertTrue(homePage.isPageOpened(), "Home page is not opened.");
+    public void loginTest() {
+        String email = "c.facu98@gmail.com";
+        String pass = "qwerty";
 
-        LoginPage loginPage = homePage.loginBtn();
-        Assert.assertTrue(loginPage.isPageOpened(), "Login page is not opened.");
+        Optional<AccountPage> accountPage = login(getDriver(), email, pass);
 
-        AccountPage accountPage = loginPage.login("c.facu98@gmail.com", "qwerty");
-        Assert.assertTrue(accountPage.isPageOpened(), "Account page is not opened.");
-
-        Assert.assertTrue(accountPage.verifyLogin("Facundo Costa"));
+        Assert.assertTrue(accountPage.isPresent());
+        Assert.assertTrue(accountPage.get().verifyLogin("Facundo Costa"));
     }
 
     @Test(description = "Test login with invalid credentials")
     @MethodOwner(owner = "Facundo")
-    public void loginNegativeTest(){
-        HomePage homePage = new HomePage(getDriver());
-        homePage.open();
-        Assert.assertTrue(homePage.isPageOpened(), "Home page is not opened.");
+    public void loginNegativeTest() {
+        String email = "c.facu98@gmail.com";
+        String pass = "qweqwqwe";
 
-        LoginPage loginPage = homePage.loginBtn();
-        Assert.assertTrue(loginPage.isPageOpened(), "Login page is not opened.");
+        Optional<AccountPage> accountPage = login(getDriver(), email, pass);
 
-        loginPage.login("c.facu98@gmail.com", "qweqwe");
-        loginPage.isInvalidPass();
-
+        Assert.assertFalse(accountPage.isPresent());
     }
 
     @Test(description = "Test logout after login")
     @MethodOwner(owner = "Facundo")
     public void logoutTest(){
-        HomePage homePage = new HomePage(getDriver());
-        homePage.open();
-        Assert.assertTrue(homePage.isPageOpened(), "Home page is not opened.");
+        String email = "c.facu98@gmail.com";
+        String pass = "qwerty";
+        Optional<AccountPage> accountPage = login(getDriver(), email, pass);
+        Assert.assertTrue(accountPage.isPresent());
 
-        LoginPage loginPage = homePage.loginBtn();
-        Assert.assertTrue(loginPage.isPageOpened(), "Login page is not opened.");
+        Assert.assertTrue(accountPage.get().verifyLogin("Facundo Costa"));
 
-        AccountPage accountPage = loginPage.login("c.facu98@gmail.com", "qwerty");
-        Assert.assertTrue(accountPage.isPageOpened(), "Account page is not opened.");
-
-        Assert.assertTrue(accountPage.verifyLogin("Facundo Costa"));
-
-        loginPage = accountPage.logout();
+        LoginPage loginPage = accountPage.get().logout();
         Assert.assertTrue(loginPage.isPageOpened(), "Couldn't logout.");
     }
 
-    @Test(description = "Test searching for a product and adding it to the cart")
+    @Test(dataProvider = "DP1", description = "Test searching for a product and adding it to the cart")
     @MethodOwner(owner = "Facundo")
-    public void addToCartTest(){
-        HomePage homePage = new HomePage(getDriver());
-        homePage.open();
-        Assert.assertTrue(homePage.isPageOpened(), "Home page is not opened.");
+    public void addToCartTest(String TUID, String search) {
 
-        String search = "dress";
-        SearchPage searchPage = homePage.makeSearch(search);
+        String email = "c.facu98@gmail.com";
+        String pass = "qwerty";
+
+        Optional<AccountPage> accountPage = login(getDriver(), email, pass);
+        Assert.assertTrue(accountPage.isPresent());
+
+        SearchPage searchPage = accountPage.get().makeSearch(search);
         Assert.assertTrue(searchPage.isPageOpened(), "Search page is not opened.");
         Assert.assertTrue(searchPage.compareWords(search));
 
@@ -89,6 +83,16 @@ public class WebTest extends AbstractTest {
         itemPage.addToCart();
         CartPage cartPage = itemPage.goToCartPage();
         Assert.assertTrue(cartPage.isPageOpened(), "Cart page is not opened.");
-        cartPage.verifyCart();
+
+        Assert.assertTrue(cartPage.verifyCart());
+    }
+
+    @DataProvider(name = "DP1")
+    public static Object[][] dataprovider() {
+        return new Object[][] {
+                {"TUID: Data1", "dress"},
+                //{"TUID: Data2", "shirt"}, QUESTION: Why the item list takes the second.
+                {"TUID: Data3", "black"}
+        };
     }
 }

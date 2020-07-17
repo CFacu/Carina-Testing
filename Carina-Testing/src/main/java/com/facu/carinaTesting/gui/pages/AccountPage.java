@@ -12,6 +12,7 @@ public class AccountPage extends AbstractPage {
 
     public AccountPage(WebDriver driver) {
         super(driver);
+        setPageURL("?controller=my-account");
     }
 
     public boolean verifyLogin(String name){
@@ -20,6 +21,11 @@ public class AccountPage extends AbstractPage {
 
     public LoginPage logout(){
         return headerMenu.clickLogoutBtn();
+    }
+
+    public SearchPage makeSearch(String movie){
+        headerMenu.typeSearch(movie);
+        return headerMenu.clickSearchButton();
     }
 
 }

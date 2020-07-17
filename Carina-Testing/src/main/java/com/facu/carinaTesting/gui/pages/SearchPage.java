@@ -11,27 +11,32 @@ import java.util.List;
 
 public class SearchPage extends AbstractPage {
 
-    @FindBy(xpath = "//*[@id=\"center_column\"]/ul")
+    @FindBy(xpath = "//div[@id='center_column']/ul")
     private List<ExtendedWebElement> resultList;
 
-    @FindBy(xpath = "//*[@id=\"center_column\"]/h1/span[1]")
+    @FindBy(xpath = "//div[@id='center_column']/h1/span[@class='lighter']")
     private ExtendedWebElement wordSearched;
 
     @FindBy(id = "header")
     private HeaderMenu headerMenu;
+
+    @FindBy(xpath = "//div[@id='center_column']/p")
+    private ExtendedWebElement notFoundMsg;
 
     public SearchPage(WebDriver driver) {
         super(driver);
     }
 
     public boolean compareWords(String word){
-        return wordSearched.getText().equalsIgnoreCase('"'+word+'"');
+        if (wordSearched.isElementPresent()) {
+            return wordSearched.getText().equalsIgnoreCase('"' + word + '"');
+        } else return notFoundMsg.isElementPresent();
     }
 
     public ExtendedWebElement getFirstItem(){
-        Assert.assertTrue(resultList.size() > 0, "No results");
-        resultList.get(0).assertElementPresent();
-        return resultList.get(0);
+        if (resultList.size() > 0) {
+            return resultList.get(0);
+        } else return null;
     }
 
     public ItemPage goToItemPage(){

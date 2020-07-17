@@ -10,7 +10,7 @@ import java.util.List;
 
 public class FooterMenu extends AbstractUIObject {
 
-    @FindBy(id = "//*[@id=\"block_various_links_footer\"]/ul")
+    @FindBy(id = "//section[@id='block_various_links_footer']/ul")
     private List<ExtendedWebElement> informationMenu;
 
     public FooterMenu(WebDriver driver, SearchContext searchContext) {
