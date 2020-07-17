@@ -7,27 +7,27 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
 
-public class HeaderMenu  extends AbstractUIObject {
+public class HeaderMenu extends AbstractUIObject {
 
     @FindBy(id = "search_query_top")
     private ExtendedWebElement searchInput;
 
-    @FindBy(xpath = "//*[@id=\"searchbox\"]/button")
+    @FindBy(xpath = "//form[@id='searchbox']/button")
     private ExtendedWebElement searchBtn;
 
-    @FindBy(xpath = "//*[@id=\"header_logo\"]/a")
+    @FindBy(xpath = "//div[@id='header_logo']/a")
     private ExtendedWebElement homeLink;
 
     @FindBy(className = "login")
     private ExtendedWebElement loginBtn;
 
-    @FindBy(xpath = "//*[@id=\"header\"]/div[2]/div/div/nav/div[1]/a")
+    @FindBy(xpath = "//header[@id='header']/div[@class='nav']/div/div/nav/div/a[@class='account']/span")
     private ExtendedWebElement accountBtn;
 
-    @FindBy(className = "logout")
+    @FindBy(xpath = "//header[@id='header']/div[@class='nav']/div/div/nav/div/a[@class='logout']")
     private ExtendedWebElement logoutBtn;
 
-    @FindBy(xpath = "//*[@id=\"header\"]/div[3]/div/div/div[3]/div/a")
+    @FindBy(xpath = "//div[@class='shopping_cart']/a")
     private ExtendedWebElement cartBtn;
 
     public HeaderMenu(WebDriver driver, SearchContext searchContext) {

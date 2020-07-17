@@ -14,7 +14,7 @@ public class ItemPage extends AbstractPage {
     @FindBy(id = "add_to_cart")
     private ExtendedWebElement addToCartBtn;
 
-    @FindBy(xpath = "//*[@id=\"layer_cart\"]/div[1]/div[2]/div[4]/span")
+    @FindBy(xpath = "//div[@class='button-container']/span/span")
     private ExtendedWebElement continueBtn;
 
     public ItemPage(WebDriver driver) {

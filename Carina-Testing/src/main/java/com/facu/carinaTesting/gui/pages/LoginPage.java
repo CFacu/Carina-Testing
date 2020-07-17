@@ -17,11 +17,12 @@ public class LoginPage extends AbstractPage {
     @FindBy(id = "SubmitLogin")
     private ExtendedWebElement signInBtn;
 
-    @FindBy(xpath = "//*[@id=\"center_column\"]/div[1]/ol/li")
+    @FindBy(xpath = "//div[@id='center_column']/div/ol/li")
     private ExtendedWebElement invalidPassTxt;
 
     public LoginPage(WebDriver driver) {
         super(driver);
+        setPageURL("?controller=authentication&back=my-account");
     }
 
     public AccountPage login(String email, String pass){
@@ -32,7 +33,7 @@ public class LoginPage extends AbstractPage {
 
     }
 
-    public void isInvalidPass() {
-        Assert.assertNotNull(invalidPassTxt);
+    public boolean isInvalidPass() {
+        return invalidPassTxt.isElementPresent();
     }
 }
